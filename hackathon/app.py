@@ -7,7 +7,7 @@ from datetime import datetime
 
 current_date = datetime.now().strftime("%Y-%m-%d")
 
-# Configure Gemini AI (Replace with actual API key)
+# Configure Gemini AI
 genai.configure(api_key="AIzaSyALHO1TzXQ7cesq94Gb08N_8gg70F70pdM")
 model = genai.GenerativeModel("gemini-1.5-pro-latest")
 
