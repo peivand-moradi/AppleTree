@@ -32,7 +32,7 @@ import requests
 
 # Function to get nearby places
 def get_nearby_places(address, keyword):
-    API_KEY = "AIzaSyBcrOJ7DTqXnLzlmD-75uSg1IOb006F2uU"  # Replace with your API key
+    API_KEY = "AIzaSyBcrOJ7DTqXnLzlmD-75uSg1IOb006F2uU"  
     url = f"https://maps.googleapis.com/maps/api/place/textsearch/json?query={keyword}+near+{address}&key={API_KEY}"
 
     response = requests.get(url)
