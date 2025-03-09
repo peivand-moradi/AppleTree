@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <title>Return Request</title>
+</head>
+<body>
+    <header>
+        <a href="#">FAQs ?</a>
+        <div>
+            <a href="#">Contact</a>
+            <i class="fas fa-comments"></i>
+        </div>
+    </header>
+
+    <section id="inputs">
+        <form id="returnForm" enctype="multipart/form-data">
+            <div class="user_input">
+                <p>Address:</p>
+                <input type="text" name="address" placeholder="Add your address..." required>
+            </div>
+            <div class="user_input">
+                <label for="locations">Purchase location:</label>
+                <select name="purchase_location" id="locations">
+                    <option value="Nike">Nike</option>
+                    <option value="Adidas">Adidas</option>
+                    <option value="Amazon">Amazon</option>
+                </select>
+            </div>
+            <div class="user_input">
+                <p>Purchase Date:</p>
+                <input type="date" name="purchase_date" required>
+            </div>
+            <div class="user_input">
+                <p>Product Code:</p>
+                <input type="text" name="product_code" placeholder="Add code..." required>
+            </div>
+            <div class="user_input">
+                <p>Order Number:</p>
+                <input type="text" name="order_number" placeholder="Add number..." required>
+            </div>
+            <div class="user_input">
+                <p>Upload photos:</p>
+                <input type="file" name="photos" accept="image/*" multiple required>
+            </div>
+            <div class="user_input">
+                <p>Returning Reason:</p>
+                <input type="text" name="return_reason" placeholder="Type your reason..." required>
+            </div>
+            <div id="button">
+                <button type="submit">Continue</button>
+            </div>
+        </form>
+    </section>
+
+    <script>
+        document.getElementById("returnForm").addEventListener("submit", function(event) {
+            event.preventDefault();  // Prevent page refresh
+
+            let formData = new FormData(this);  // Collects form data
+
+            fetch("/check_return", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.result);
+                if (!data.error) {
+                    fetch("/result")
+                    .then(response => response.json())
+                    .then(data => alert("AI Analysis: " + data.result))
+                    .catch(error => console.error("Error fetching result:", error));
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        });
+    </script>
+</body>
+</html>

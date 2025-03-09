@@ -1,0 +1,105 @@
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+a{
+    text-decoration: none;
+    display: inline-block;
+    color: inherit;
+    font-weight: 400;
+}
+header{
+    color: white;
+    background-color: #29741D;
+    width: 100%;
+    height: 70px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 80px;
+    flex-wrap: wrap;
+}
+header a{
+    font-size: 16px;
+    margin: 10px;
+}
+header div{
+    display: flex;
+    justify-content: baseline;
+    align-items: center;
+}
+#inputs{
+    width: 100%;
+    padding: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#inputs form{
+    border-radius: 20px;
+    padding: 10px 0 10px 0;
+    background-color: rgba(240, 191, 89,0.4);
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items:center;
+    flex-wrap: wrap;
+}
+.user_input{
+    padding: 20px;
+    font-size: 18px;
+    font-weight: 400;
+    width: 80% ;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    border-bottom: solid 1px  #29741D;
+}
+input{
+    display: inline-block;
+    border-radius: 20px;
+    padding: 10px;
+    border: none;
+    margin-top: 15px;
+}
+#locations{
+    border-radius: 20px;
+    padding: 10px;
+    border: none;
+    margin-top: 15px;
+}
+input::file-selector-button{
+    border-radius: 20px;
+    padding: 10px;
+    border: none;
+    /* margin-top: 15px; */
+}
+
+button{
+    background-color:  #29741D;
+    color: white;
+    width: 200px;
+    font-size: 18px;
+    font-weight: 400;
+    border-radius: 20px;
+    padding: 10px;
+    border: none;
+}
+#button{
+    margin: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#submit{
+    background-color:  black;
+    color: white;
+    width: 90px;
+    padding: 8px;
+
+}
