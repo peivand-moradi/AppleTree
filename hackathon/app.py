@@ -150,10 +150,8 @@ def analysis():
         """
         # Get AI-generated response
         response = model.generate_content(prompt)
-        # result = response.text
-        # return jsonify({"result": result})
         try:
-            result = response.candidates[0].content.parts[0].text.strip() # AI Response (may contain formatting issues)
+            result = response.candidates[0].content.parts[0].text.strip() # AI Response 
             return jsonify({"result": result})  # Return the Markdown response
         except AttributeError:
             return jsonify({"error": "Failed to extract AI response. Check response structure."}), 500
