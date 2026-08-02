@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Compare practical and sustainable options for unwanted purchases.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+    <title>AppleTree | Smarter returns</title>
+</head>
+<body>
+    <header class="site-header">
+        <a class="brand" href="#top" aria-label="AppleTree home">
+            <span class="brand-mark" aria-hidden="true">●</span>
+            AppleTree
+        </a>
+        <a class="header-link" href="#how-it-works">How it works</a>
+    </header>
+
+    <main id="top">
+        <section class="hero" aria-labelledby="page-title">
+            <div>
+                <p class="eyebrow">Return better. Waste less.</p>
+                <h1 id="page-title">Find a better next step for your purchase.</h1>
+                <p class="hero-copy">Compare retailer returns, donation, recycling, and disposal based on your product and nearby options.</p>
+            </div>
+            <div class="tree-card" aria-hidden="true">
+                <div class="tree-crown">●</div>
+                <div class="tree-trunk"></div>
+                <p>Every thoughtful return helps.</p>
+            </div>
+        </section>
+
+        <section class="workspace" aria-label="Return advisor">
+            <div class="form-panel">
+                <div class="section-heading">
+                    <p class="step">Step 1</p>
+                    <h2>Tell us about the return</h2>
+                    <p>All fields are required. Photos are used only for this analysis.</p>
+                </div>
+
+                <form id="returnForm" enctype="multipart/form-data">
+                    <div class="field full-width">
+                        <label for="address">Your location</label>
+                        <input id="address" type="text" name="address" autocomplete="street-address" placeholder="City or postal code" required>
+                        <small>Used to find nearby donation and recycling options.</small>
+                    </div>
+
+                    <div class="field">
+                        <label for="locations">Purchase location</label>
+                        <select name="purchase_location" id="locations" required>
+                            <option value="Nike">Nike</option>
+                            <option value="Adidas">Adidas</option>
+                            <option value="Amazon">Amazon</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="purchase_date">Purchase date</label>
+                        <input id="purchase_date" type="date" name="purchase_date" max="{{ today }}" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="product_code">Product code</label>
+                        <input id="product_code" type="text" name="product_code" placeholder="e.g. SKU-1234" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="order_number">Order number</label>
+                        <input id="order_number" type="text" name="order_number" placeholder="e.g. 10482" required>
+                    </div>
+
+                    <div class="field full-width">
+                        <label for="return_reason">Why are you returning it?</label>
+                        <textarea id="return_reason" name="return_reason" rows="3" placeholder="Describe the product condition and reason for return" required></textarea>
+                    </div>
+
+                    <div class="field full-width upload-field">
+                        <label for="photos">Product photos</label>
+                        <input id="photos" type="file" name="photos" accept="image/jpeg,image/png,image/webp" multiple required>
+                        <small>JPG, PNG, or WebP. Maximum 12 MB total.</small>
+                    </div>
+
+                    <button id="submitButton" type="submit">
+                        <span class="button-label">Analyze my options</span>
+                        <span class="spinner" aria-hidden="true"></span>
+                    </button>
+                    <p id="formStatus" class="status" role="status" aria-live="polite"></p>
+                </form>
+            </div>
+
+            <aside id="resultPanel" class="result-panel" aria-labelledby="result-title">
+                <p class="step">Step 2</p>
+                <h2 id="result-title">Your return options</h2>
+                <div id="emptyResult" class="empty-result">
+                    <span aria-hidden="true">↗</span>
+                    <p>Your personalized comparison will appear here after you submit the form.</p>
+                </div>
+                <div id="analysisResult" class="analysis-result" hidden></div>
+            </aside>
+        </section>
+
+        <section id="how-it-works" class="how-it-works" aria-labelledby="how-title">
+            <p class="eyebrow">How it works</p>
+            <h2 id="how-title">One product, several possible paths.</h2>
+            <div class="steps">
+                <article><strong>1</strong><h3>Describe it</h3><p>Add purchase details and photos of its current condition.</p></article>
+                <article><strong>2</strong><h3>Compare options</h3><p>AppleTree considers prototype return policies and nearby services.</p></article>
+                <article><strong>3</strong><h3>Choose thoughtfully</h3><p>Review the trade-offs, then verify details with the retailer.</p></article>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>AppleTree is an advisory prototype. Always confirm return policies and location details.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+    <script>
+        const form = document.getElementById("returnForm");
+        const submitButton = document.getElementById("submitButton");
+        const status = document.getElementById("formStatus");
+        const emptyResult = document.getElementById("emptyResult");
+        const analysisResult = document.getElementById("analysisResult");
+
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            submitButton.disabled = true;
+            submitButton.classList.add("loading");
+            status.textContent = "Checking nearby options and analyzing your return…";
+            status.className = "status";
+
+            try {
+                const response = await fetch("{{ url_for('analyze_return') }}", {
+                    method: "POST",
+                    body: new FormData(form)
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || "The analysis could not be completed.");
+
+                analysisResult.innerHTML = DOMPurify.sanitize(marked.parse(data.result));
+                analysisResult.hidden = false;
+                emptyResult.hidden = true;
+                status.textContent = "Analysis complete.";
+                status.className = "status success";
+                document.getElementById("resultPanel").scrollIntoView({ behavior: "smooth", block: "start" });
+            } catch (error) {
+                status.textContent = error.message;
+                status.className = "status error";
+            } finally {
+                submitButton.disabled = false;
+                submitButton.classList.remove("loading");
+            }
+        });
+    </script>
+</body>
+</html>
